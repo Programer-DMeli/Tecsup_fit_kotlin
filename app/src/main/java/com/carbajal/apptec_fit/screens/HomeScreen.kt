@@ -1,5 +1,6 @@
 package com.carbajal.apptec_fit.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carbajal.apptec_fit.data.FitnessClass
@@ -30,17 +33,40 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Encabezado con jerarquía Material 3
-        Text(
-            text = "TECSUP Fit",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            text = "Bienvenido a tu centro deportivo",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        // Encabezado en contenedor con degradado intenso entre Azul y Celeste
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            color = Color.Transparent
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary,   // Azul Tecsup intenso
+                                MaterialTheme.colorScheme.secondary  // Celeste Tecsup
+                            )
+                        )
+                    )
+                    .padding(20.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "TECSUP Fit",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Bienvenido a tu centro deportivo",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.9f)
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
