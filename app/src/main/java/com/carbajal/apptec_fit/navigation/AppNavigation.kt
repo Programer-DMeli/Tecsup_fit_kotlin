@@ -49,7 +49,7 @@ fun AppNavigation() {
                             selected = currentRoute == screen.route,
                             onClick = {
                                 navController.navigate(screen.route) {
-                                    // Evita acumular pantallas en el BackStack
+                                    // Evita acumular pantallas en el BackStack y guarda estado
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
                                     }
@@ -111,7 +111,6 @@ fun AppNavigation() {
                     classId = classId,
                     onBackClick = { navController.popBackStack() },
                     onReserveClick = { id ->
-                        // Reemplaza la pantalla de detalle para un flujo más limpio
                         navController.navigate(Screen.Confirmations.createRoute(id)) {
                             popUpTo(Screen.ClassDetail.route) { inclusive = true }
                         }
@@ -127,10 +126,13 @@ fun AppNavigation() {
                 ConfirmationScreen(
                     classId = classId,
                     onGoToReservationsClick = {
-                        // Navega directamente a Reservas limpiando el flujo de reserva previo
+                        // Navega a la pestaña de Reservas respetando el guardado y restauración de estado de las pestañas
                         navController.navigate(Screen.Reservation.route) {
-                            popUpTo(Screen.Home.route) { inclusive = false }
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     }
                 )
