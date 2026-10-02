@@ -1,6 +1,5 @@
 package com.carbajal.apptec_fit.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,35 +8,39 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = TecsupLightBlue,
+    onPrimary = Color.Black,
+    primaryContainer = TecsupDarkBlue,
+    onPrimaryContainer = Color.White,
+    secondary = TecsupLightBlue,
+    secondaryContainer = Color(0xFF003854),
+    onSecondaryContainer = TecsupSecondaryContainer,
+    background = Color(0xFF0F172A),
+    surface = Color(0xFF1E293B)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = TecsupBlue,
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primaryContainer = TecsupCelesteContainer,
+    onPrimaryContainer = TecsupDarkBlue,
+    secondary = TecsupLightBlue,
+    secondaryContainer = TecsupSecondaryContainer,
+    onSecondaryContainer = TecsupDarkBlue,
+    background = TecsupBackground,
+    surface = TecsupSurface,
+    surfaceVariant = Color(0xFFF1F5F9),
+    onSurfaceVariant = Color(0xFF475569)
 )
 
 @Composable
 fun AppTecFITTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Desactivado para mantener identidad institucional Tecsup
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,7 +48,6 @@ fun AppTecFITTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

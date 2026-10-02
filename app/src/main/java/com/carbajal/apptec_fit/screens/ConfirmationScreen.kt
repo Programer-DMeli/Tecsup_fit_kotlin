@@ -1,28 +1,25 @@
 package com.carbajal.apptec_fit.screens
 
-import com.carbajal.apptec_fit.data.FitnessRepository
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.carbajal.apptec_fit.data.FitnessRepository
 
 @Composable
 fun ConfirmationScreen(
     classId: String,                       // Recibe el ID de la clase desde la navegación
     onGoToReservationsClick: () -> Unit    // Callback para ir al listado de reservas
 ) {
-    // Buscamos los datos de la clase seleccionada
     val fitnessClass = FitnessRepository.getClassById(classId)
 
     Column(
@@ -32,10 +29,10 @@ fun ConfirmationScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // --- ÍCONO DE ÉXITO (CIRCULAR) ---
+        // Ícono circular de confirmación
         Box(
             modifier = Modifier
-                .size(80.dp)
+                .size(88.dp)
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer,
                     shape = CircleShape
@@ -43,20 +40,18 @@ fun ConfirmationScreen(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Check,
+                imageVector = Icons.Default.CheckCircle,
                 contentDescription = "Éxito",
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- MENSÁJE DE CONFIRMACIÓN ---
         Text(
             text = "¡Cupo Reservado!",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
 
@@ -64,28 +59,31 @@ fun ConfirmationScreen(
 
         Text(
             text = "Tu lugar ha sido asegurado correctamente.",
-            fontSize = 14.sp,
-            color = Color.Gray,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // --- TARJETA CON EL RESUMEN ---
+        // Tarjeta con el resumen de reserva
         if (fitnessClass != null) {
-            Card(
-                shape = RoundedCornerShape(12.dp),
+            ElevatedCard(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.elevatedCardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(20.dp)
                 ) {
                     Text(
                         text = "Detalles de la Reserva",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
 
@@ -93,40 +91,38 @@ fun ConfirmationScreen(
 
                     Text(
                         text = fitnessClass.name,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleLarge
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
                         text = "Horario: ${fitnessClass.time}",
-                        fontSize = 14.sp,
-                        color = Color.DarkGray
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     Text(
                         text = "Lugar: ${fitnessClass.room}",
-                        fontSize = 14.sp,
-                        color = Color.DarkGray
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(36.dp))
 
-        // --- BOTÓN PRINCIPAL: NAVEGAR A MIS RESERVAS ---
         Button(
             onClick = onGoToReservationsClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(12.dp)
+                .height(52.dp),
+            shape = RoundedCornerShape(14.dp)
         ) {
             Text(
                 text = "Ver mis reservas",
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
         }

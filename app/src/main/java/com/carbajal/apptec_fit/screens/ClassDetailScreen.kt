@@ -1,18 +1,18 @@
 package com.carbajal.apptec_fit.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.carbajal.apptec_fit.data.FitnessRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,13 +22,17 @@ fun ClassDetailScreen(
     onBackClick: () -> Unit,       // Callback para volver a la pantalla anterior
     onReserveClick: (String) -> Unit // Callback para proceder a la confirmación
 ) {
-    // 1. Buscamos en el repositorio la información completa de la clase usando su ID
     val fitnessClass = FitnessRepository.getClassById(classId)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalle de clase", fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        "Detalle de Clase",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -36,11 +40,13 @@ fun ClassDetailScreen(
                             contentDescription = "Volver"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
     ) { paddingValues ->
-        // Si no encontramos la clase mostramos un mensaje o evitamos el error
         if (fitnessClass == null) {
             Box(
                 modifier = Modifier
@@ -48,33 +54,45 @@ fun ClassDetailScreen(
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Clase no encontrada")
+                Text(
+                    "Clase no encontrada",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         } else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(24.dp)
+                    .padding(20.dp)
             ) {
-                // --- BANNER DE LA CLASE ---
+                // Banner elegante con colores Tecsup
                 Card(
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(160.dp)
+                        .height(150.dp)
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Icon(
+                            imageVector = Icons.Default.FitnessCenter,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = fitnessClass.name,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
@@ -82,59 +100,96 @@ fun ClassDetailScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // --- INFORMACIÓN DE LA CLASE ---
                 Text(
                     text = fitnessClass.name,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.headlineMedium
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Text(
-                    text = "${fitnessClass.time} · ${fitnessClass.room} · ${fitnessClass.duration}",
-                    fontSize = 15.sp,
-                    color = Color.Gray
-                )
+                // Fichas informativas de la clase
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    AssistChip(
+                        onClick = { },
+                        label = { Text(fitnessClass.time) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.AccessTime,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    )
+                    AssistChip(
+                        onClick = { },
+                        label = { Text(fitnessClass.room) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.LocationOn,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    )
+                    AssistChip(
+                        onClick = { },
+                        label = { Text(fitnessClass.duration) }
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Entrenamiento funcional de alta intensidad para mejorar tu resistencia física y fuerza muscular.",
-                    fontSize = 14.sp,
-                    color = Color.DarkGray
+                    text = "Entrenamiento funcional de alta intensidad diseñado para mejorar tu resistencia física, fuerza muscular y bienestar general en Tecsup.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Indicador de cupos disponibles
+                // Indicador de cupos con Material 3
                 Surface(
-                    color = Color(0xFFE8F5E9),
-                    shape = RoundedCornerShape(8.dp)
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = "${fitnessClass.availableSpots} de 12 cupos disponibles",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF2E7D32)
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Cupos disponibles",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                        Text(
+                            text = "${fitnessClass.availableSpots} de 12",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
-                // Empuja el botón hacia la parte inferior de la pantalla
                 Spacer(modifier = Modifier.weight(1f))
 
-                // --- BOTÓN PRINCIPAL DE ACCIÓN ---
+                // Botón principal M3
                 Button(
                     onClick = { onReserveClick(fitnessClass.id) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(12.dp)
+                        .height(54.dp),
+                    shape = RoundedCornerShape(14.dp)
                 ) {
                     Text(
                         text = "Reservar cupo",
-                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -142,4 +197,3 @@ fun ClassDetailScreen(
         }
     }
 }
-

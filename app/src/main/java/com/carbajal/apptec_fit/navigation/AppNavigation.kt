@@ -25,10 +25,10 @@ import com.carbajal.apptec_fit.screens.RoutinesScreen
 
 @Composable
 fun AppNavigation() {
-    //1. Controladores de navegacion de Jetpack Compose
+    // Controladores de navegación de Jetpack Compose
     val navController = rememberNavController()
 
-    //2.- Definimos la lista de pantallas que apareceran en el menu inferior BottomBar
+    // Lista de pantallas para el menú inferior
     val bottomBarScreens = listOf(
         Screen.Home,
         Screen.Reservation,
@@ -36,28 +36,23 @@ fun AppNavigation() {
         Screen.Profile
     )
 
-    //3.- Obtenemos la ruta actual para saber que pantalla esta seleccionada
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    //4.- Scaffold que envuelve toda la estructura con la barra inferior
     Scaffold(
         bottomBar = {
-            //Solo mostrar con bottomBar SI LA PANTALLA ACTUAL PERTENECE A LA NAVEGACION Inferior
             val showBottomBar = bottomBarScreens.any { it.route == currentRoute }
             if (showBottomBar) {
                 NavigationBar {
                     bottomBarScreens.forEach { screen ->
                         NavigationBarItem(
-                            // Evaluamos si la ruta actual es igual a la ruta que se muestra
                             selected = currentRoute == screen.route,
                             onClick = {
                                 navController.navigate(screen.route) {
-                                    //Evita acumular una pila gigante de pantalla al hacer clic
+                                    // Evita acumular pantallas en el BackStack
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
                                     }
-                                    //Mantener el estado de la pantalla seleccionada
                                     launchSingleTop = true
                                     restoreState = true
                                 }
@@ -79,13 +74,12 @@ fun AppNavigation() {
             }
         }
     ) { innerPadding ->
-        //5.- El NavHost registra todas las rutas de la app y que mostrar en cada una
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route, //Es la primera pantalla
-            modifier = Modifier.padding(innerPadding) //aplica el margen para no tapar con la barra inferior
+            startDestination = Screen.Home.route,
+            modifier = Modifier.padding(innerPadding)
         ) {
-            //6.- Rutas definidas para el menu Inferior
+            // Rutas de navegación principal
             composable(Screen.Home.route) {
                 HomeScreen(
                     onClassClick = { classId ->
@@ -106,9 +100,7 @@ fun AppNavigation() {
                 ProfileScreen()
             }
 
-            //Flujo secuencial de Navegacion
-
-            //Detalle de clase
+            // Flujo secundario de reserva
             composable(
                 route = Screen.ClassDetail.route,
                 arguments = listOf(navArgument("classId") { type = NavType.StringType })
@@ -119,12 +111,14 @@ fun AppNavigation() {
                     classId = classId,
                     onBackClick = { navController.popBackStack() },
                     onReserveClick = { id ->
-                        navController.navigate(Screen.Confirmations.createRoute(id))
+                        // Reemplaza la pantalla de detalle para un flujo más limpio
+                        navController.navigate(Screen.Confirmations.createRoute(id)) {
+                            popUpTo(Screen.ClassDetail.route) { inclusive = true }
+                        }
                     }
                 )
             }
 
-            //Confirmacion de cupo
             composable(
                 route = Screen.Confirmations.route,
                 arguments = listOf(navArgument("classId") { type = NavType.StringType })
@@ -133,8 +127,10 @@ fun AppNavigation() {
                 ConfirmationScreen(
                     classId = classId,
                     onGoToReservationsClick = {
+                        // Navega directamente a Reservas limpiando el flujo de reserva previo
                         navController.navigate(Screen.Reservation.route) {
-                            popUpTo(Screen.Home.route)
+                            popUpTo(Screen.Home.route) { inclusive = false }
+                            launchSingleTop = true
                         }
                     }
                 )
