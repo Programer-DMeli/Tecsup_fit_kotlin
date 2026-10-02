@@ -48,13 +48,14 @@ fun AppNavigation() {
                         NavigationBarItem(
                             selected = currentRoute == screen.route,
                             onClick = {
-                                navController.navigate(screen.route) {
-                                    // Evita acumular pantallas en el BackStack y guarda estado
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                                if (currentRoute != screen.route) {
+                                    navController.navigate(screen.route) {
+                                        // Limpia la pila hasta el inicio evitando acumular pantallas
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            inclusive = false
+                                        }
+                                        launchSingleTop = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
                             },
                             icon = {
@@ -79,7 +80,7 @@ fun AppNavigation() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Rutas de navegación principal
+            // Rutas de navegación principal (BottomBar)
             composable(Screen.Home.route) {
                 HomeScreen(
                     onClassClick = { classId ->
@@ -126,13 +127,12 @@ fun AppNavigation() {
                 ConfirmationScreen(
                     classId = classId,
                     onGoToReservationsClick = {
-                        // Navega a la pestaña de Reservas respetando el guardado y restauración de estado de las pestañas
+                        // Navega a Reservas limpiando el flujo de reserva secundario hasta Inicio
                         navController.navigate(Screen.Reservation.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                            popUpTo(Screen.Home.route) {
+                                inclusive = false
                             }
                             launchSingleTop = true
-                            restoreState = true
                         }
                     }
                 )
